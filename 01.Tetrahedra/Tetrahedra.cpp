@@ -31,8 +31,8 @@
 #include "GLUT/ModernGL.h"
 using namespace GLUT;
 
-GLfloat topY    =  2.0 / 3.0 * sqrtf(2);
-GLfloat bottomY = -1.0 / 3.0 * sqrtf(2);
+GLfloat topY    =  3.0 / 4.0 * sqrtf(2);
+GLfloat bottomY = -1.0 / 4.0 * sqrtf(2);
 
 GLfloat vertexT[] = { 0.0f,    topY, 0.0f };
 GLfloat vertexF[] = { 0.0f, bottomY, 1.0f };
@@ -150,17 +150,17 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // Rotate the image
-        glMatrixMode( GL_MODELVIEW );			// Current matrix affects objects positions
+        glMatrixMode(GL_MODELVIEW);			// Current matrix affects objects positions
         glLoadIdentity();						// Initialize to the identity
-        glTranslatef( -0.5, 0.0, -25.0 );				// Translate  from origin (in front of viewer)
-        glRotatef( rotateAngle, 0.0, 1.0, 0.0 );		// Rotate around y-axis
-        glRotatef( azimuth, 1.0, 0.0, 0.0 );			// Set Azimuth angle
+        glTranslatef(0, 0.0, -25.0);				// Translate  from origin (in front of viewer)
+        glRotatef(rotateAngle, 0.0, 1.0, 0.0);		// Rotate around y-axis
+        glRotatef(azimuth, 1.0, 0.0, 0.0);			// Set Azimuth angle
         
         glPushMatrix();
-        glTranslatef( 1.5, 0.0, 0.0 );
+        glTranslatef(1.5, 0.0, 0.0);
         drawRight3Simplex();
         glPopMatrix();
-        glTranslatef( -1.5, 0.0, 0.0 );
+        glTranslatef(-1.5, 0.0, 0.0);
         drawLeft3Simplex();
         
         this->flushAndSwapBuffers();
