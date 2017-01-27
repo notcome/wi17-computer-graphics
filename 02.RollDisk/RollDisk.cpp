@@ -8,16 +8,16 @@
  *   the folder where this files is located.
  */
 
+#include <cmath>
+#include <iostream>
+#include <cstdlib>
 #include "GLUT/Common.h"
 #include "GLUT/Window.h"
 #include "GLUT/Constants.h"
 #include "GLUT/ModernGL.h"
-using namespace GLUT;
 
-#include <cmath>
-#include <iostream>
-#include <cstdlib>
 using namespace std;
+using namespace GLUT;
 
 class RollDiskWindow: public Window {
     const float trellisRadius = 1.0f;
@@ -38,7 +38,7 @@ public:
         if (key == 'p') {
             this->isPontentialEnergyEnabled = !this->isPontentialEnergyEnabled;
         } else if (key == 27) {
-            exit(1);
+            std::exit(1);
         } else {
             if (key == 'D')
                 this->diskRadius = fmin(this->diskRadius * 1.1, maxDiskRadius);
@@ -153,7 +153,7 @@ public:
         for (int i = 0; i < 6; i ++) {
             float d1 = 2 * PI / 18. * static_cast<float>(i * 3);
             float d2 = 2 * PI / 18. * static_cast<float>(i * 3 + 1);
-            DrawBlock(GL_TRIANGLES, [=](){
+            DrawBlock(GL_TRIANGLES, [&](){
                 color(colors[i % 3]);
                 vertex(0.0, 0.0, 0.0);
                 vertex(cosf(d1) * diskRadius, sinf(d1) * diskRadius, 0);
