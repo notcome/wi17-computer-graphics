@@ -17,3 +17,4 @@ include_directories("GLUTWrapper/include")
 
 add_subdirectory(GLUTWrapper)
 add_subdirectory(01.Tetrahedra)
+add_subdirectory(02.RollDisk)
