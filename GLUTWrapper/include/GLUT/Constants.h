@@ -22,6 +22,8 @@ namespace GLUT {
         static const GLfloat lightGray[];
         static const GLfloat darkGray[];
     };
+    
+    const GLfloat PI = 3.14159f;
 }
 
 #endif

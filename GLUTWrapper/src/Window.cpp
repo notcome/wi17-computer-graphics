@@ -40,7 +40,7 @@ void Window::flushAndSwapBuffers() {
     glutSwapBuffers();
 }
 
-void Window::resizeWindow(int width, int height) {
+void Window::onResizeWindow(int width, int height) {
     if (height == 0)
         height = 1;
     if (width == 0)
@@ -56,6 +56,10 @@ void Window::resizeWindow(int width, int height) {
                    globalWindow->nearZ,
                    globalWindow->farZ);
     glMatrixMode(GL_MODELVIEW);
+}
+
+void callOnResizeWindow(int width, int height) {
+    globalWindow->onResizeWindow(width, height);
 }
 
 void Window::setCullFace(bool enableCullFace) {
@@ -94,14 +98,16 @@ void Window::switchWireFrameOption() {
         this->setWireFrame(true);
 }
 
-Window::Window(int argc, char **argv, const char *title) {
+Window::Window(int argc, char **argv, const char *title,
+               int windowPositionX, int windowPositionY,
+               int windowSizeWidth, int windowSizeHeight) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     
-    glutInitWindowPosition(0, 0);
-    glutInitWindowSize(360, 360);
+    glutInitWindowPosition(windowPositionX, windowPositionY);
+    glutInitWindowSize(windowSizeWidth, windowSizeHeight);
     glutCreateWindow(title);
-    glutReshapeFunc(Window::resizeWindow);
+    glutReshapeFunc(callOnResizeWindow);
     
     glShadeModel(GL_FLAT);
     glClearColor(0.0, 0.0, 0.0, 0.0);

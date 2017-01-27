@@ -14,8 +14,6 @@
 namespace GLUT {
     class Window {
     private:
-        static void resizeWindow(int width, int height);
-        
         // By default, GL_CULL is disabled.
         bool isCullFaceEnabled  = false;
         bool isWireFrameEnabled = false;
@@ -31,7 +29,9 @@ namespace GLUT {
     public:
         virtual void onKeyPress(unsigned char, int, int);
         virtual void onSpecialKey(int, int, int);
+        virtual void onResizeWindow(int width, int height);
         virtual void draw();
+        
         
         void postRedisplay();
         void flushAndSwapBuffers();
@@ -39,7 +39,9 @@ namespace GLUT {
         void switchCullFaceOption();
         void switchWireFrameOption();
         
-        Window(int argc, char **argv, const char *title);
+        Window(int argc, char **argv, const char *title,
+               int windowPositionX = 0, int windowPositionY = 0,
+               int windowSizeWidth = 360, int windowSizeHeight = 360);
         
         void runLoop();
     };
