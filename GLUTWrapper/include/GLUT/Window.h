@@ -29,7 +29,7 @@ namespace GLUT {
     public:
         virtual void onKeyPress(unsigned char, int, int);
         virtual void onSpecialKey(int, int, int);
-        virtual void onResizeWindow(int width, int height);
+        virtual void onResizeWindow(int, int);
         virtual void draw();
         
         
