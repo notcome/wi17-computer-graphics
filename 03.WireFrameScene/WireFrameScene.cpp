@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
+#include <array>
 
 #include "GLUT/Common.h"
 #include "GLUT/Window.h"
@@ -30,7 +31,7 @@ private:
     const float minAngleStep = 0.1f;
     
     float time = 0.0f;
-    const float timeStep = 0.005f;
+    const float timeStep = 0.05f;
     
     void drawGeometry();
     void drawRotatingSurface();
@@ -59,7 +60,7 @@ public:
         if (key == 'w')
             return this->switchWireFrameOption();
         if (key == 'a')
-            this->isAnimated = ! this->isAnimated;
+            this->isAnimated = !this->isAnimated;
         if (key == 27)
             exit(1);
         
@@ -145,85 +146,85 @@ int main(int argc, char **argv) {
 }
 
 void WireFrameSceneWindow::drawGeometry() {
-    // You will need to rewrite this routine for Project #3.
-    // In the supplied executable, I draw a "S" based on elongated
-    //	ellipsoids.  These were formed using glutSolidSphere()'s,
-    //  reoriented and scaled to turn the spheres into ellipsoids.
-    // You should do something comparable -- about as complicated as
-    //  my example.   You are encouraged to include a larger variety
-    //  of shapes than just ellipses, and to make the end result
-    //  artistically interesting in some aspect.
-    // Your scene must include some animation.
+    const float hypotenuse = 4.0f;
+    const float inclination = 15.0f;
+    const float height = cosf(degreeToRadian(inclination)) * hypotenuse;
+    const float halfWidth = sinf(degreeToRadian(inclination)) * hypotenuse;
+    const float elliXZRadius = 0.5f / 2;
+    const auto drawSphere = bind(drawSolidSphereAtNorthPole, meshCount);
     
-    glColor3f( 0.0, 1.0, 0.5 );		// The color of the "S" shape.
     glPushMatrix();
-    glTranslatef( -2.0, 0.0, -2.0);	// Move leftward and away from the viewer a little
-    glPushMatrix();
-    glTranslatef( -0.5, 0.5, 0.0 );
-    glRotatef( -45.0, 0.0, 0.0, 1.0 );
-    glRotatef( 90.0, 0.0, 1.0, 0.0 );
-    glScalef( 0.20f, 0.20f, 0.66f );
-    glutSolidSphere( 1.0, this->meshCount, this->meshCount );
-    glPopMatrix();
-    glPushMatrix();
-    glTranslatef( 0.5, 0.5, 0.0 );
-    glRotatef( 45.0, 0.0, 0.0, 1.0 );
-    glRotatef( 90.0, 0.0, 1.0, 0.0 );
-    glScalef( 0.20f, 0.20f, 0.66f );
-    glutSolidSphere( 1.0, this->meshCount, this->meshCount );
-    glPopMatrix();
-    glPushMatrix();
-    glTranslatef( 0.0, 2.0, 0.0 );
-    glRotatef( -45.0, 0.0, 0.0, 1.0 );
-    glRotatef( 90.0, 0.0, 1.0, 0.0 );
-    glScalef( 0.20f, 0.2f, 1.33f );
-    glutSolidSphere ( 1.0, this->meshCount, this->meshCount );
-    glPopMatrix();
-    glPushMatrix();
-    glTranslatef( -0.5, 3.5, 0.0 );
-    glRotatef( 45.0, 0.0, 0.0, 1.0 );
-    glRotatef( 90.0, 0.0, 1.0, 0.0 );
-    glScalef( 0.20f, 0.20f, 0.66f );
-    glutSolidSphere( 1.0, this->meshCount, this->meshCount );
-    glPopMatrix();
-    // Now do the animated ellipsoid
-    glPushMatrix();
-    
-    float a = -sinf(time);
-    a = (a<0.0f)? 0.0f : a;
-    float thetaMin = 45.0;
-    float bloatMin = 1.0;
-    float lenMin = 1.0;
-    float thetaMax = 0.0;
-    float bloatMax = 1.2f;
-    float lenMax = 1.2f;
-    float len = (1.0f-a)*lenMin + a*lenMax;
-    float bloat = (1.0f-a)*bloatMin + a*bloatMax;
-    float theta = (1.0f-a)*thetaMin + a*thetaMax;
-    float thetaRadians = theta*3.1415926535f/180.0f;
-    glTranslatef( len*cosf(thetaRadians)/sqrtf(2.0), 4.0f-len*sinf(thetaRadians)/sqrtf(2.0), 0.0 );
-    glRotatef( -theta, 0.0, 0.0, 1.0 );
-    glRotatef( 90.0, 0.0, 1.0, 0.0 );
-    glScalef( 0.20f*len*bloat, 0.20f*len*bloat, 0.66f*len );
-    glutSolidSphere( 1.0, this->meshCount, this->meshCount );
-    glPopMatrix();
-    
+    glTranslatef(-2, 0, -2);
+    glRotatef(45, 0, 1, 0);
+    {
+        color(0.0f, 1.0f, 0.5f);
+        
+        glPushMatrix();
+        glTranslatef(-halfWidth, height, 0.0f);
+        glRotatef(-inclination, 0, 0, 1);
+        withScale(elliXZRadius, hypotenuse / 2, elliXZRadius, drawSphere);
+        glRotatef(inclination * 2, 0, 0, 1);
+        withScale(elliXZRadius, hypotenuse / 2, elliXZRadius, drawSphere);
+        glPopMatrix();
+        
+        glPushMatrix();
+        const float rightLegRotation = (this->time <= PI ? time : 2 * PI - time) / PI * 45.0f;
+        glRotatef(-rightLegRotation, 0, 1, 0);
+        glTranslatef(halfWidth, height, 0.0f);
+        glRotatef(inclination, 0, 0, 1);
+        withScale(elliXZRadius, hypotenuse / 2, elliXZRadius, drawSphere);
+        glRotatef(-inclination * 2, 0, 0, 1);
+        withScale(elliXZRadius, hypotenuse / 2, elliXZRadius, drawSphere);
+        glPopMatrix();
+    }
     glPopMatrix();
 }
 
+inline float meshToAngle(int meshCount, int i) {
+    return static_cast<float>(i % meshCount) / meshCount * 2 * PI;
+}
+
+inline array<float, 3> parameterize(float theta, float radius) {
+    array<float, 3> coord{ {
+        cosf(theta) * radius * 1,
+        cosf(radius) / (5 + radius * radius),
+        -sinf(theta) * radius * 1
+    } };
+    return coord;
+}
+
 void WireFrameSceneWindow::drawRotatingSurface() {
-    // For project #3 you need to write this routine.
-    // See the homework instructions for information
-    //     on the shape and position of the sombrero.
+    const float radiusStep = 1.0f / meshCount * 3 * PI;
     
-    // Remove the next four lines of code!
-    // Replace them with code that draws
-    //     the (cos r)/(1+r*r) surface of revolution.
     glPushMatrix();
+    glTranslatef(1.2f, 0.6f, 1.2f);
+    glScalef(0.8 / PI, 8, 0.8 / PI);
+    color(1.0f, 0.3f, 1.0f);
     
-    glColor3f( 1.0f, 0.3f, 1.0f );
-    glTranslatef( 1.0f, 1.2f, 1.0f );
-    glutSolidSphere(1.2f, this->meshCount, this->meshCount);
+    DrawBlock(GL_TRIANGLE_FAN, [=](){
+        vertex(0.0f, 0.2f, 0.0f);
+        for (int i = 0; i <= meshCount; i ++) {
+            float theta = meshToAngle(meshCount, i);
+            vertex(parameterize(theta, radiusStep).data());
+        }
+    });
+    
+    // We compute using polar coordinates and convert them to Cartessian coordinates.
+    for (int i = 0; i < meshCount; i ++) {
+        float theta1 = meshToAngle(meshCount, i);
+        float theta2 = meshToAngle(meshCount, i + 1);
+        
+        DrawBlock(GL_QUAD_STRIP, [=]{
+            float radius = radiusStep;
+            vertex(parameterize(theta2, radius).data());
+            vertex(parameterize(theta1, radius).data());
+            for (int j = 2; j <= meshCount; j ++) {
+                radius += radiusStep;
+                vertex(parameterize(theta2, radius).data());
+                vertex(parameterize(theta1, radius).data());
+            }
+        });
+    }
     
     glPopMatrix();
 }
