@@ -42,6 +42,10 @@ inline float radianToDegree (const float radian) {
     return radian * 180.0f / PI;
 }
 
+inline float degreeToRadian (const float degree) {
+    return degree / 180.0f * PI;
+}
+
 class DrawBlock {
 public:
     DrawBlock(GLenum mode, std::function<void()> draw) {
@@ -50,6 +54,33 @@ public:
         glEnd();
     }
 };
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+// This function draws the unit sphere with its south pole at (0, 0, 0).
+inline void drawSolidSphereAtNorthPole(int meshCount) {
+    glTranslatef(0.0, -1.0, 0.0);
+    glutSolidSphere(1.0, meshCount, meshCount);
+}
+
+inline void drawSolidSphereAtSouthPole(int meshCount) {
+    glTranslatef(0.0, 1.0, 0.0);
+    glutSolidSphere(1.0, meshCount, meshCount);
+}
+#pragma clang diagnostic pop
+
+inline void withMode(GLenum mode, std::function<void()> draw) {
+    glBegin(mode);
+    draw();
+    glEnd();
+}
+
+inline void withScale(float x, float y, float z, std::function<void()> draw) {
+    glPushMatrix();
+    glScalef(x, y, z);
+    draw();
+    glPopMatrix();
+}
 
 NameSpaceEnd
 
