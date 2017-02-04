@@ -37,9 +37,9 @@ private:
     void drawRotatingSurface();
     
     // Rotation of x,y-plane.
-    float azimuth;
+    float azimuth = 15.0f;
     // Rotation around y axis.
-    float rotation;
+    float rotation = 0.0f;
     
     bool isAnimated = true;
     
